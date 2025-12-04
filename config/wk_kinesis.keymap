@@ -57,12 +57,12 @@
     combos {
         compatible = "zmk,combos";
 
-        combo_esc {
-            timeout-ms = <100>;
-            layers = <0>;
-            key-positions = <POS_LH_C6R5 POS_RH_C6R5>;
-            bindings = <&caps_word>;
-        };
+ //       combo_esc {
+ //           timeout-ms = <100>;
+ //           layers = <0>;
+ //           key-positions = <POS_LH_C6R5 POS_RH_C6R5>;
+ //           bindings = <&caps_word>;
+  //      };
 
         c_symbols {
             bindings = <&mo 1>;
