@@ -5,17 +5,73 @@
 #include <dt-bindings/zmk/rgb.h>
 
 / {
+#define HYPER LC(LS(LG(LALT)))
+#define MEH LC(LS(LALT))
+
+// layers
+
+#define DEFAULT  0
+#define SYMBOL   1
+#define NUMBER   2
+#define NAV      3
+#define QWERTY   4
+/ {
     behaviors {
-        hm: homerow_mods {
+        // For the "layer" key, it'd nice to be able to use it as either a shift or a toggle.
+        // Configure it as a tap dance, so the first tap (or hold) is a &mo and the second tap is a &to
+
+        lt: layer_tap {
             compatible = "zmk,behavior-hold-tap";
-            label = "HOMEROW_MODS";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <150>;
+            bindings = <&mo>, <&kp>;
+
+            display-name = "Layer-Tap";
+        };
+
+        td_esc: tap_dance_1 {
+            compatible = "zmk,behavior-tap-dance";
+            label = "ESC_CAPS";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&kp ESC>, <&kp CAPS>;
+        };
+
+        num_sym: num_sym {
+            compatible = "zmk,behavior-hold-tap";
+            label = "NUM_SYM";
+            bindings = <&mo>, <&to>;
+
             #binding-cells = <2>;
             tapping-term-ms = <200>;
-            quick_tap_ms = <175>;
-            flavor = "tap-preferred";
-            bindings = <&kp>, <&kp>;
+        };
+
+        f10_qwerty_colemak: f10_qwerty_colemak {
+            compatible = "zmk,behavior-tap-dance";
+            label = "F10_QWERTY_COLEMAK";
+            #binding-cells = <0>;
+            bindings = <&kp F10>, <&to 0>, <&to 4>;
         };
     };
+
+    combos {
+        compatible = "zmk,combos";
+
+        combo_esc {
+            timeout-ms = <100>;
+            layers = <0>;
+            key-positions = <POS_LH_C6R5 POS_RH_C6R5>;
+            bindings = <&caps_word>;
+        };
+
+        c_symbols {
+            bindings = <&mo 1>;
+            key-positions = <46 53>;
+        };
+    };
+
+    conditional_layers { compatible = "zmk,conditional-layers"; };
 
     keymap {
         compatible = "zmk,keymap";
@@ -23,11 +79,11 @@
         default_layer {
             display-name = "Base";
             bindings = <
-&kp ESC    &kp N1     &kp N2    &kp N3        &kp N4  &kp N5                                                                                             &kp N6  &kp N7  &kp N8         &kp N9         &kp N0     &kp MINUS
-&kp TAB    &kp Q      &kp W     &kp E         &kp R   &kp T                                                                                              &kp Y   &kp U   &kp I          &kp O          &kp P      &kp BSLH
-&kp CAPS   &kp A      &kp S     &kp D         &kp F   &kp G                  &kp LEFT_ARROW  &kp RIGHT          &kp UP_ARROW  &kp DOWN_ARROW             &kp H   &kp J   &kp K          &kp L          &kp SEMI   &kp SQT
-&kp LSHFT  &kp Z      &kp X     &kp C         &kp V   &kp B                                  &kp PG_UP          &kp HOME                                 &kp N   &kp M   &kp COMMA      &kp DOT        &kp FSLH   &kp RSHFT
-           &kp LCTRL  &kp LWIN  &kp LEFT_ALT  &mo 1           &kp BACKSPACE  &kp DELETE      &kp PAGE_DOWN      &kp END       &kp ENTER       &kp SPACE          &mo 2   &kp RIGHT_ALT  &kp RIGHT_WIN  &kp RCTRL
+&kp EQUAL       &kp N1    &kp N2       &kp N3         &kp N4   &kp N5                                                                                         &kp N6  &kp N7    &kp N8     &kp N9   &kp N0     &kp MINUS
+&kp TAB         &kp Q     &kp W        &kp F          &kp P    &kp B                                                                                          &kp J   &kp L     &kp U      &kp Y    &kp SEMI   &kp BSLH
+&td_esc         &kp A     &kp R        &kp S          &kp T    &kp G         &kp LCTRL  &num_sym 3 2         &num_sym 3 2    &kp RCTRL                        &kp M   &kp N     &kp E      &kp I    &kp O      &kp SQT
+&kp LSHFT      &kp Z      &kp X        &kp C          &kp D    &kp V                    &kp LEFT_WIN         &kp LEFT_ALT                             &kp K   &kp H   &kp COMMA  &kp DOT  &kp FSLH   &kp RSHFT
+           &kp LCTRL  &kp LWIN  &kp LEFT_ALT  &mo 1           &kp BACKSPACE  &kp DELETE &kp LS(LC(LALT))     &kp LS(LC(LA(LG(LEFT_GUI))))  &lt SYMBOL RET  &kp SPACE  &kp LEFT  &kp DOWN   &kp UP   &kp RIGHT
             >;
         };
 
@@ -82,12 +138,12 @@
         };
 
         layer_6 {
-            bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans                                                      &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans                                                      &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans          &trans  &trans      &trans  &trans          &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans                  &trans      &trans                  &trans  &trans  &trans  &trans  &trans  &trans
-        &trans  &trans  &trans  &trans          &trans  &trans  &trans      &trans  &trans  &trans          &trans  &trans  &trans  &trans
+                 bindings = <
+&kp ESC    &kp N1     &kp N2    &kp N3        &kp N4  &kp N5                                                                                             &kp N6  &kp N7  &kp N8         &kp N9         &kp N0     &kp MINUS
+&kp TAB    &kp Q      &kp W     &kp E         &kp R   &kp T                                                                                              &kp Y   &kp U   &kp I          &kp O          &kp P      &kp BSLH
+&kp CAPS   &kp A      &kp S     &kp D         &kp F   &kp G                  &kp LEFT_ARROW  &kp RIGHT          &kp UP_ARROW  &kp DOWN_ARROW             &kp H   &kp J   &kp K          &kp L          &kp SEMI   &kp SQT
+&kp LSHFT  &kp Z      &kp X     &kp C         &kp V   &kp B                                  &kp PG_UP          &kp HOME                                 &kp N   &kp M   &kp COMMA      &kp DOT        &kp FSLH   &kp RSHFT
+           &kp LCTRL  &kp LWIN  &kp LEFT_ALT  &mo 1           &kp BACKSPACE  &kp DELETE      &kp PAGE_DOWN      &kp END       &kp ENTER       &kp SPACE          &mo 2   &kp RIGHT_ALT  &kp RIGHT_WIN  &kp RCTRL
             >;
         };
     };
